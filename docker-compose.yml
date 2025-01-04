@@ -15,12 +15,12 @@ services:
 
   backend:
     build:
-      context: ./backend
+      context: ./backend-1
       dockerfile: Dockerfile
     env_file:
-      - ./backend/.env     
+      - ./backend-1/.env     
     volumes:
-      - ./backend:/app
+      - ./backend-1:/app
       - /app/node_modules
     networks:
       - movieslist
