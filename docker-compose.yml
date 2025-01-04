@@ -1,0 +1,53 @@
+version: '3.8'
+
+name: movieslist
+
+services:
+  mongo:
+    image: mongo:6
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - movieslist  
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env     
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - movieslist
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    command: npm start
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - movieslist
+    ports:
+      - "5173:5173"
+    command: npm run dev           
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
+
+networks:
+  movieslist:
+    driver: bridge        
